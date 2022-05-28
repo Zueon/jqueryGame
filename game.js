@@ -1,4 +1,4 @@
-const userClickedPattern = [];
+let userClickedPattern = [];
 const gamePattern = [];
 const buttonColours = ['red', 'blue', 'green', 'yellow'];
 let level = 0;
@@ -13,6 +13,7 @@ $(document).keypress(function () {
 });
 
 function nextSequence() {
+  userClickedPattern = [];
   level++;
   $('#level-title').text('Level ' + level);
 
@@ -34,6 +35,7 @@ function clickHandler() {
   userClickedPattern.push(userChosenColour);
   animatePress(userChosenColour);
   playSound(userChosenColour);
+  checkAnswer(userClickedPattern.length - 1);
 }
 
 function playSound(name) {
@@ -46,4 +48,22 @@ function animatePress(currentColour) {
   setTimeout(() => {
     $('#' + currentColour).removeClass('pressed');
   }, 100);
+}
+
+function checkAnswer(currentLevel) {
+  if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+    console.log('success');
+
+    if (userClickedPattern.length === gamePattern.length) {
+      setTimeout(function () {
+        nextSequence();
+      }, 1000);
+    }
+  } else {
+    $('body').addClass('game-over');
+    setTimeout(function () {
+      $('body').removeClass('game-over');
+    }, 1000);
+    $('#level-title').text('GAME OVER, Rress Any Key to Restart');
+  }
 }
